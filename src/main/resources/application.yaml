@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: mallservice
+  profiles:
+    # 指定为开发环境
+    active: dev
+  datasource:
+    driver-class-name: ${mall.datasource.driver-class-name}
+    url: ${mall.datasource.url}
+    username: ${mall.datasource.username}
+    password: ${mall.datasource.password}
+  data:
+    redis:
+      host: ${mall.redis.host}
+      port: ${mall.redis.port}
+      #      password: ${blog.redis.password} # docker部署的redis我暂时没有设置密码
+      database: ${mall.redis.database}
+      lettuce:
+        pool:
+          max-active: ${mall.redis.lettuce.pool.max-active}
+          max-idle: ${mall.redis.lettuce.pool.max-idle}
+          min-idle: ${mall.redis.lettuce.pool.min-idle}
+          max-wait: ${mall.redis.lettuce.pool.max-wait}
+
+mybatis-plus:
+  configuration:
+    #自动驼峰命名转化
+    map-underscore-to-camel-case: true
+
+#配置日志级别
+logging:
+  level:
+    pers.ly.mall.mapper: debug
+
+#启动端口
+server:
+  port: 9090

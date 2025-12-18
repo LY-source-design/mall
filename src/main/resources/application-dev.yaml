@@ -1,0 +1,25 @@
+mall:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 协议://主机地址:端口号/数据库名?参数1=值1&参数2=值2&...
+    # url可以分开配置,后续在拼接会好看一点
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  jwt:
+    secret-key: "asdfghjklqwertyuiopzxcvbnmqwuefhuioagfigfIOGWUFGIWAGHFIdffsfeffhiuhgusihguiahhgor"
+    access-expiration: 999999999 # 7200000
+    refresh-expiration: 604800000
+    token-prefix: "Bearer "
+    token-header: "Authorization"
+  redis:
+    host: 192.168.14.52
+    port: 6379
+    password: 1038317691
+    database: 0
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+        max-wait: 200
