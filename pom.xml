@@ -48,6 +48,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 加密 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- mybatis-plus一依赖 -->
         <!-- 要严格按照springboot版本选择 -->
         <dependency>

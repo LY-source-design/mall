@@ -3,7 +3,7 @@ mall:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 协议://主机地址:端口号/数据库名?参数1=值1&参数2=值2&...
     # url可以分开配置,后续在拼接会好看一点
-    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/db_mall?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 123456
   jwt:
