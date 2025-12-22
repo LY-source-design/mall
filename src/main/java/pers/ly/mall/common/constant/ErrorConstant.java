@@ -7,6 +7,8 @@ public class ErrorConstant {
     public static final String TOKE_IS_EMPTY = "token不能为空";
     public static final String TOKEN_NOT_VALID = "token格式不合法";
     public static final String TOKEN_EXPIRED = "token过期了";
+    public static final String DO_REFRESH_TOKEN = "请求刷新令牌";
+    public static final String REFRESH_TOKEN_EXPIRE = "刷新token过期了,请重新登录";
 
     //登录注册的常量
     public static final String USERNAME_EXIST = "用户名已存在";
@@ -15,4 +17,9 @@ public class ErrorConstant {
     public static final String USERNAME_ERROR = "用户名错误";
     public static final String USER_STATUS_ERROR = "账号被锁定";
     public static final String PASSWORD_ERROR = "密码错误";
+
+    //common
+    public static final String UNKNOWN_ERROR = "未知错误";
+
+
 }

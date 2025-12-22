@@ -81,7 +81,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public UserLoginVO login(UserLoginDTO userLoginDTO) {
         //1. 查询账号密码是否正确
-        // TODO 加密操作
         if(userLoginDTO.getUsername().isEmpty()){
             throw new LoginException(ErrorConstant.USERNAME_IS_EMPTY);
         }

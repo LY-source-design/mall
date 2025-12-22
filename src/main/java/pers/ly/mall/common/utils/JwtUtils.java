@@ -52,7 +52,9 @@ public class JwtUtils {
                     .getPayload();
         } catch (ExpiredJwtException e) {
             throw new JwtParseException(ErrorConstant.TOKEN_EXPIRED);
-        };
+        } catch (JwtParseException e) {
+            throw e;
+        }
         return claims;
     }
 
@@ -65,13 +67,8 @@ public class JwtUtils {
      * @return 新的令牌
      */
     public static String refreshToken(String token, long expiration, String prefix, String secretKey) {
-        Date expirationDate = getExpiration(token, prefix, secretKey);
-        long restTime = System.currentTimeMillis() - expirationDate.getTime();
-        if (restTime * 2 <= expiration) {
-            Claims claims = parseToken(token, prefix, secretKey);
-            return createToken(secretKey, expiration, prefix, claims);
-        }
-        return token;
+        Claims claims = parseToken(token, prefix, secretKey);
+        return createToken(secretKey, expiration, prefix, claims);
     }
 
 

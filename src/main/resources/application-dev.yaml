@@ -8,8 +8,8 @@ mall:
     password: 123456
   jwt:
     secret-key: "asdfghjklqwertyuiopzxcvbnmqwuefhuioagfigfIOGWUFGIWAGHFIdffsfeffhiuhgusihguiahhgor"
-    access-expiration: 999999999 # 7200000
-    refresh-expiration: 604800000
+    access-expiration: 10 # 7200000
+    refresh-expiration: 10
     token-prefix: "Bearer "
     token-header: "Authorization"
   redis:

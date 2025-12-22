@@ -1,11 +1,10 @@
 package pers.ly.mall.user.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pers.ly.mall.common.context.CurrentContext;
 import pers.ly.mall.common.entity.User;
+import pers.ly.mall.common.entity.UserInfo;
 import pers.ly.mall.common.entity.result.Result;
 import pers.ly.mall.user.dto.UserLoginDTO;
 import pers.ly.mall.user.service.UserInfoService;
@@ -46,6 +45,13 @@ public class UserController {
     @PostMapping("/login")
     public Result login(@RequestBody UserLoginDTO userLoginDTO) {
         UserLoginVO result = userService.login(userLoginDTO);
+        return Result.success(result);
+    }
+
+    @GetMapping("/me")
+    public Result me() {
+        Integer userId = CurrentContext.getUserId();
+        UserInfo result = userInfoService.getById(userId);
         return Result.success(result);
     }
 }
