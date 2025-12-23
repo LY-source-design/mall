@@ -15,7 +15,7 @@ mall:
   redis:
     host: 192.168.14.52
     port: 6379
-    password: 1038317691
+    password: "1038317691"
     database: 0
     lettuce:
       pool:

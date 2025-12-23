@@ -27,10 +27,10 @@ import java.util.Map;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    private UserMapper userMapper;
-    private UserInfoMapper userInfoMapper;
-    private PasswordEncoder passwordEncoder;
-    private JwtConfigProperties jwtConfigProperties;
+    private final UserMapper userMapper;
+    private final UserInfoMapper userInfoMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtConfigProperties jwtConfigProperties;
 
     UserServiceImpl(UserMapper userMapper, UserInfoMapper userInfoMapper,
                     PasswordEncoder passwordEncoder, JwtConfigProperties jwtConfigProperties) {

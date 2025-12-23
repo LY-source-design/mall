@@ -22,7 +22,7 @@ public class ErrorConstant {
     public static final String NO_REACH_SERVER = "请求未到达服务器";
     public static final String REJECT_BY_SERVER = "请求被服务器拒绝";
     public static final String FILE_WRITE_ERROR = "文件读写异常";
-    public static final String FILE_IS_VALID = "文件只能是图片";
+    public static final String FILE_IS_VALID = "非法文件,文件只能是图片";
 
     //common
     public static final String UNKNOWN_ERROR = "未知错误";

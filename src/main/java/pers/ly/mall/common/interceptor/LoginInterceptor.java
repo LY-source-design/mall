@@ -17,8 +17,8 @@ import java.io.IOException;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
-    private JwtConfigProperties jwtConfigProperties;
-    private ObjectMapper mapper;
+    private final JwtConfigProperties jwtConfigProperties;
+    private final ObjectMapper mapper;
 
     LoginInterceptor(JwtConfigProperties jwtConfigProperties, ObjectMapper mapper) {
         this.jwtConfigProperties = jwtConfigProperties;
@@ -54,7 +54,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         CurrentContext.clear();
     }
 

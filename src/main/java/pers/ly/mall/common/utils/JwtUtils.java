@@ -49,8 +49,6 @@ public class JwtUtils {
                     .getPayload();
         } catch (ExpiredJwtException e) {
             throw new JwtParseException(ErrorConstant.TOKEN_EXPIRED);
-        } catch (JwtParseException e) {
-            throw e;
         }
         return claims;
     }

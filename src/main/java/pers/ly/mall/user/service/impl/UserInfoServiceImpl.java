@@ -12,7 +12,7 @@ import pers.ly.mall.user.service.UserInfoService;
 
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
-    private AliyunOssUtil aliyunOssUtil;
+    private final AliyunOssUtil aliyunOssUtil;
     UserInfoServiceImpl(AliyunOssUtil aliyunOssUtil) {
         this.aliyunOssUtil = aliyunOssUtil;
     }
@@ -26,8 +26,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public String updateAvatar(MultipartFile avatar) {
         String originalFilename = avatar.getOriginalFilename();
-        if (originalFilename.endsWith("jpg") || originalFilename.endsWith("jpeg") ||
-                originalFilename.endsWith("png") || originalFilename.endsWith("gif")) {
+        if (originalFilename != null && (originalFilename.endsWith("jpg") ||
+                originalFilename.endsWith("jpeg") ||
+                originalFilename.endsWith("png") ||
+                originalFilename.endsWith("gif"))) {
             return aliyunOssUtil.upload("avatar", avatar);
         }
         else {

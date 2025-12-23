@@ -19,7 +19,7 @@ import java.io.InputStream;
 @Slf4j
 @Component
 public class AliyunOssUtil {
-    private AliyunOssProperties aliyunOssProperties;
+    private final AliyunOssProperties aliyunOssProperties;
 
     AliyunOssUtil(AliyunOssProperties properties){
         this.aliyunOssProperties=properties;
@@ -48,7 +48,7 @@ public class AliyunOssUtil {
 
         // 3. 处理文件名：拼接UUID避免重复，防止文件覆盖
         String originalFilename = file.getOriginalFilename();
-        String uniqueFileName = UUID.randomUUID(true).toString() + "_" + originalFilename;
+        String uniqueFileName = UUID.randomUUID(true) + "_" + originalFilename;
         // 完整的OSS对象路径（不含Bucket名称）
         String objectName = path.trim() + "/" + uniqueFileName;
 
@@ -78,8 +78,7 @@ public class AliyunOssUtil {
             // 创建上传请求
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, inputStream);
             // 执行上传
-            PutObjectResult result = ossClient.putObject(putObjectRequest);
-
+            ossClient.putObject(putObjectRequest);
             // 6. 拼接完整的OSS文件访问URL并返回
             return String.format("https://%s.%s/%s", bucketName, endpoint, objectName);
         } catch (OSSException oe) {

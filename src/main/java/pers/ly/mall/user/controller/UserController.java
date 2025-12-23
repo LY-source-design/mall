@@ -69,7 +69,7 @@ public class UserController {
     /**
      * 上传头像文件
      * @param avatar 头像文件
-     * @return
+     * @return 文件路径
      */
     @Operation(summary = "上传头像文件", description = "上传头像")
     @PostMapping("/avatar/upload")
