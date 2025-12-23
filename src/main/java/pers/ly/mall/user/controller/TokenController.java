@@ -1,6 +1,8 @@
 package pers.ly.mall.user.controller;
 
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/token")
+@Tag(name = "令牌管理", description = "令牌管理的相关接口")
 public class TokenController {
 
     @Resource
@@ -27,8 +30,9 @@ public class TokenController {
      * 刷新访问令牌
      * @param refreshTokenDTO 刷新令牌
      */
+    @Operation(summary = "更新令牌", description = "利用刷新令牌刷新访问令牌")
     @PostMapping("/refresh")
-    public Result refresh(@RequestBody RefreshTokenDTO refreshTokenDTO) {
+    public Result<RefreshTokenVO> refresh(@RequestBody RefreshTokenDTO refreshTokenDTO) {
         try {
             String token = refreshTokenDTO.getToken();
             Claims claims = JwtUtils.parseToken(token, jwtConfigProperties.getTokenPrefix(), jwtConfigProperties.getSecretKey());
@@ -51,9 +55,9 @@ public class TokenController {
             e.printStackTrace();
             if(ErrorConstant.TOKEN_EXPIRED.equals(e.getMessage())) {
                 //这里过期一定是刷新令牌过期了,但是要设置不同返回值,不然前端又要来刷新
-                return Result.error(ErrorConstant.REFRESH_TOKEN_EXPIRE);
+                throw new JwtParseException(ErrorConstant.REFRESH_TOKEN_EXPIRE);
             }
-            return Result.error(e.getMessage());
+            throw e;
         }
     }
 }
