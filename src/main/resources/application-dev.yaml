@@ -9,7 +9,7 @@ mall:
   jwt:
     secret-key: "asdfghjklqwertyuiopzxcvbnmqwuefhuioagfigfIOGWUFGIWAGHFIdffsfeffhiuhgusihguiahhgor"
     access-expiration: 10 # 7200000
-    refresh-expiration: 10
+    refresh-expiration: 1929388
     token-prefix: "Bearer "
     token-header: "Authorization"
   redis:
@@ -23,3 +23,12 @@ mall:
         max-idle: 10
         min-idle: 2
         max-wait: 200
+
+aliyun:
+  oss:
+    endpoint: "oss-cn-beijing.aliyuncs.com"
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET}
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    bucket-name: "lys-mall"
+    region: "cn-beijing"
+

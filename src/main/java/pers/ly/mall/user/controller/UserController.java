@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pers.ly.mall.common.context.CurrentContext;
 import pers.ly.mall.common.entity.User;
 import pers.ly.mall.common.entity.UserInfo;
@@ -60,8 +61,34 @@ public class UserController {
     @Operation(summary = "获取个人信息", description = "获取自己的个人信息")
     @GetMapping("/me")
     public Result<UserInfo> me() {
-        Integer userId = CurrentContext.getUserId();
+        Long userId = CurrentContext.getUserId();
         UserInfo result = userInfoService.getById(userId);
         return Result.success(result);
+    }
+
+    /**
+     * 上传头像文件
+     * @param avatar 头像文件
+     * @return
+     */
+    @Operation(summary = "上传头像文件", description = "上传头像")
+    @PostMapping("/avatar/upload")
+    public Result<String> updateAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        String path = userInfoService.updateAvatar(avatar);
+        return Result.success(path);
+    }
+
+    /**
+     * 修改个人信息
+     * @Param userInfo 修改的用户信息
+     * @return 返回成功信号
+     */
+    @Operation(summary = "修改个人信息", description = "修改个人信息")
+    @PostMapping("/me")
+    public Result<String> updateInfo(@RequestBody UserInfo userInfo) {
+        Long userId = CurrentContext.getUserId();
+        userInfo.setId(userId);
+        boolean flag = userInfoService.updateById(userInfo);
+        return flag ? Result.success("更新成功") : Result.error("更新失败");
     }
 }

@@ -1,13 +1,13 @@
 package pers.ly.mall.common.context;
 
 public class CurrentContext {
-    private static ThreadLocal<Integer> userIdLocal = new ThreadLocal<>();
+    private static ThreadLocal<Long> userIdLocal = new ThreadLocal<>();
 
-    public static void setUserId(int userId) {
+    public static void setUserId(Long userId) {
         userIdLocal.set(userId);
     }
 
-    public static Integer getUserId() {
+    public static Long getUserId() {
         return userIdLocal.get();
     }
 

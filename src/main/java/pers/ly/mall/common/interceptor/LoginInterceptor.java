@@ -31,7 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = request.getHeader(jwtConfigProperties.getTokenHeader());
         try{
             Claims claims = JwtUtils.parseToken(token, jwtConfigProperties.getTokenPrefix(), jwtConfigProperties.getSecretKey());
-            Integer userId = (Integer) claims.get("userId");
+            Long userId = ((Number) claims.get("userId")).longValue();
             CurrentContext.setUserId(userId);
             //解析成功,放行
             return true;

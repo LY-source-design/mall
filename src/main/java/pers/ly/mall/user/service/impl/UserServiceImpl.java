@@ -70,6 +70,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userInfo.setNickname("user_" + UUID.randomUUID(true).toString().substring(0, 8));
         userInfo.setGender((short) 0);
         userInfo.setId(user.getId());
+        // TODO:后续提取到常量类
+        userInfo.setAvatar("https://lys-mall.oss-cn-beijing.aliyuncs.com/avatar/default.jpg");
         userInfoMapper.insert(userInfo);
     }
 

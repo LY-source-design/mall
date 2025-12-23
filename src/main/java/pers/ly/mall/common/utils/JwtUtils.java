@@ -24,11 +24,8 @@ public class JwtUtils {
      * @return 令牌字符串
      */
     public static String createToken(String secretKey, long expiration, String prefix, Map<String, Object> claims) {
-
         Date expirationTime = new Date(System.currentTimeMillis() + expiration);
-
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-
         return prefix + Jwts.builder().claims(claims)
                 .signWith(key)
                 .expiration(expirationTime)

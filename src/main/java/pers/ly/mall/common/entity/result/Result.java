@@ -27,7 +27,7 @@ public class Result<T> {
         return new Result(200, "success");
     }
 
-    public static Result error(String msg) {
-        return new Result(400, msg);
+    public static Result<String> error(String msg) {
+        return new Result<>(400, msg);
     }
 }
