@@ -19,8 +19,8 @@ import pers.ly.mall.user.vo.UserLoginVO;
 @Tag(name = "用户管理", description = "用户管理的相关接口")
 public class UserController {
 
-    private UserService userService;
-    private UserInfoService userInfoService;
+    private final UserService userService;
+    private final UserInfoService userInfoService;
 
     //构造函数注入
     UserController(UserService userService, UserInfoService userInfoService) {
