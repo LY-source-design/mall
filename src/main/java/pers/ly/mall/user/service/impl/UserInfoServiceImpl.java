@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pers.ly.mall.common.constant.ErrorConstant;
+import pers.ly.mall.common.constant.OssConstant;
 import pers.ly.mall.common.entity.UserInfo;
 import pers.ly.mall.common.exception.OssUploadException;
 import pers.ly.mall.common.utils.AliyunOssUtil;
@@ -30,7 +31,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 originalFilename.endsWith("jpeg") ||
                 originalFilename.endsWith("png") ||
                 originalFilename.endsWith("gif"))) {
-            return aliyunOssUtil.upload("avatar", avatar);
+            return aliyunOssUtil.upload(OssConstant.AVATAR_PATH, avatar);
         }
         else {
             throw new OssUploadException(ErrorConstant.FILE_IS_VALID);

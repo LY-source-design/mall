@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.ly.mall.common.constant.ErrorConstant;
+import pers.ly.mall.common.constant.OssConstant;
 import pers.ly.mall.common.entity.User;
 import pers.ly.mall.common.entity.UserInfo;
 import pers.ly.mall.common.exception.LoginException;
@@ -70,8 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userInfo.setNickname("user_" + UUID.randomUUID(true).toString().substring(0, 8));
         userInfo.setGender((short) 0);
         userInfo.setId(user.getId());
-        // TODO:后续提取到常量类
-        userInfo.setAvatar("https://lys-mall.oss-cn-beijing.aliyuncs.com/avatar/default.jpg");
+        userInfo.setAvatar(OssConstant.DEFAULT_AVATAR);
         userInfoMapper.insert(userInfo);
     }
 
