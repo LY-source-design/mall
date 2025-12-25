@@ -5,7 +5,6 @@ import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +17,10 @@ import java.io.InputStream;
 
 @Slf4j
 @Component
-public class AliyunOssUtil {
+public class AliyunOssUtils {
     private final AliyunOssProperties aliyunOssProperties;
 
-    AliyunOssUtil(AliyunOssProperties properties){
+    AliyunOssUtils(AliyunOssProperties properties){
         this.aliyunOssProperties=properties;
     }
 

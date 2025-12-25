@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 public class Order {
     @TableId(type = IdType.AUTO)
     private Long id;
+    private String orderNumber;
     private Long userId;
     private Long goodId;
     private BigDecimal price;

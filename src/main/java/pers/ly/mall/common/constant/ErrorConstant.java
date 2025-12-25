@@ -24,6 +24,10 @@ public class ErrorConstant {
     public static final String FILE_WRITE_ERROR = "文件读写异常";
     public static final String FILE_IS_VALID = "非法文件,文件只能是图片";
 
+    //订单相关
+    public static final String BEGIN_STAMP_VALID = "起始的订单时间不可用,请立即更新";
+    public static final String ORDER_TOO_MUCK = "订单数量过多,服务即将崩溃";
+
     //common
     public static final String UNKNOWN_ERROR = "未知错误";
 

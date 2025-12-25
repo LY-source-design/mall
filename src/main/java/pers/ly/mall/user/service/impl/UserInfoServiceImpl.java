@@ -7,15 +7,15 @@ import pers.ly.mall.common.constant.ErrorConstant;
 import pers.ly.mall.common.constant.OssConstant;
 import pers.ly.mall.common.entity.UserInfo;
 import pers.ly.mall.common.exception.OssUploadException;
-import pers.ly.mall.common.utils.AliyunOssUtil;
+import pers.ly.mall.common.utils.AliyunOssUtils;
 import pers.ly.mall.user.mapper.UserInfoMapper;
 import pers.ly.mall.user.service.UserInfoService;
 
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
-    private final AliyunOssUtil aliyunOssUtil;
-    UserInfoServiceImpl(AliyunOssUtil aliyunOssUtil) {
-        this.aliyunOssUtil = aliyunOssUtil;
+    private final AliyunOssUtils aliyunOssUtils;
+    UserInfoServiceImpl(AliyunOssUtils aliyunOssUtils) {
+        this.aliyunOssUtils = aliyunOssUtils;
     }
 
 
@@ -31,7 +31,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 originalFilename.endsWith("jpeg") ||
                 originalFilename.endsWith("png") ||
                 originalFilename.endsWith("gif"))) {
-            return aliyunOssUtil.upload(OssConstant.AVATAR_PATH, avatar);
+            return aliyunOssUtils.upload(OssConstant.AVATAR_PATH, avatar);
         }
         else {
             throw new OssUploadException(ErrorConstant.FILE_IS_VALID);
