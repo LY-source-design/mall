@@ -3,12 +3,13 @@ package pers.ly.mall.common.constant;
 public class ErrorConstant {
 
     //TODO: 后续转化成用户可以看懂的术语
-    //Jwt的常量
+    //登录校验的常量
     public static final String TOKE_IS_EMPTY = "token不能为空";
     public static final String TOKEN_NOT_VALID = "token格式不合法";
     public static final String TOKEN_EXPIRED = "token过期了";
     public static final String DO_REFRESH_TOKEN = "请求刷新令牌";
     public static final String REFRESH_TOKEN_EXPIRE = "刷新token过期了,请重新登录";
+    public static final String PERMISSION_DENIED = "权限不足";
 
     //登录注册的常量
     public static final String USERNAME_EXIST = "用户名已存在";

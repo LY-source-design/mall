@@ -18,7 +18,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/user/me");
+                .addPathPatterns("/user/me")
+                .addPathPatterns("/user/lock");
     }
 
 

@@ -5,7 +5,9 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import pers.ly.mall.common.annotation.AdminApi;
 import pers.ly.mall.common.constant.ErrorConstant;
 import pers.ly.mall.common.context.CurrentContext;
 import pers.ly.mall.common.entity.result.Result;
@@ -28,10 +30,25 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(!(handler instanceof HandlerMethod)){
+            //不是api调用直接放行
+            return true;
+        }
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
         String token = request.getHeader(jwtConfigProperties.getTokenHeader());
         try{
             Claims claims = JwtUtils.parseToken(token, jwtConfigProperties.getTokenPrefix(), jwtConfigProperties.getSecretKey());
             Long userId = ((Number) claims.get("userId")).longValue();
+            String role = claims.get("role").toString();
+            if(handlerMethod.getMethodAnnotation(AdminApi.class) != null) {
+                //管理员接口
+                if("user".equals(role)){
+                    //不是管理员
+                    handleError(response, ErrorConstant.PERMISSION_DENIED);
+                    return false;
+                }
+            }
             CurrentContext.setUserId(userId);
             //解析成功,放行
             return true;

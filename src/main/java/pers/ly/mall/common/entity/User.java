@@ -17,4 +17,5 @@ public class User {
     private String password;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private Short role;
 }

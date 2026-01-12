@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pers.ly.mall.common.annotation.AdminApi;
 import pers.ly.mall.common.context.CurrentContext;
 import pers.ly.mall.common.entity.User;
 import pers.ly.mall.common.entity.UserInfo;
@@ -90,5 +91,18 @@ public class UserController {
         userInfo.setId(userId);
         boolean flag = userInfoService.updateById(userInfo);
         return flag ? Result.success("更新成功") : Result.error("更新失败");
+    }
+
+    /**
+     * 锁定账号
+     * @param id 要锁定的账号id
+     * @return 返回成功信号
+     */
+    @AdminApi
+    @Operation(summary = "锁定账号", description = "锁定账号")
+    @PostMapping("/lock")
+    public Result<String> lockUser(@RequestParam(value = "id")Long id) {
+        userService.lockUser(id);
+        return Result.success("锁定成功");
     }
 }

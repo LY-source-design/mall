@@ -9,4 +9,6 @@ public interface UserService extends IService<User> {
     void register(User user);
 
     UserLoginVO login(UserLoginDTO userLoginDTO);
+
+    void lockUser(Long id);
 }

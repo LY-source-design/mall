@@ -2,6 +2,7 @@ package pers.ly.mall.user.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.dao.DuplicateKeyException;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(passwordEncoder.encode(password));
         user.setCreateTime(LocalDateTime.now());
         user.setUpdateTime(LocalDateTime.now());
+        user.setRole((short) 1);
         //注册账号,通过异常去重
         try {
             userMapper.insert(user);
@@ -111,6 +113,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Long userId = user.getId();
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
+        //用于后续的登录校验
+        map.put("role", user.getRole() == 0 ? "admin" : "user");
         //2. 生成令牌
         //双令牌机制
         String accessToken = JwtUtils.createToken(jwtConfigProperties.getSecretKey()
@@ -124,5 +128,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userLoginVO.setRefreshToken(refreshToken);
 
         return userLoginVO;
+    }
+
+    /**
+     * 锁定账号
+     * @param id 要锁定的账号id
+     */
+    @Override
+    public void lockUser(Long id) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>();
+        updateWrapper.set("status", 0).set("update_time", LocalDateTime.now()).eq("id", id);
+        update(updateWrapper);
     }
 }
