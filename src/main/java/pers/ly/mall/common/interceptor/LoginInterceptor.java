@@ -30,12 +30,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(!(handler instanceof HandlerMethod)){
+        if(!(handler instanceof HandlerMethod handlerMethod)){
             //不是api调用直接放行
             return true;
         }
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
         String token = request.getHeader(jwtConfigProperties.getTokenHeader());
         try{
             Claims claims = JwtUtils.parseToken(token, jwtConfigProperties.getTokenPrefix(), jwtConfigProperties.getSecretKey());

@@ -26,6 +26,7 @@ import pers.ly.mall.user.vo.UserLoginVO;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -114,7 +115,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         //用于后续的登录校验
-        map.put("role", user.getRole() == 0 ? "admin" : "user");
+        map.put("role", Objects.equals(user.getRole(), User.ADMIN) ? "admin" : "user");
         //2. 生成令牌
         //双令牌机制
         String accessToken = JwtUtils.createToken(jwtConfigProperties.getSecretKey()
@@ -137,7 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void lockUser(Long id) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>();
-        updateWrapper.set("status", 0).set("update_time", LocalDateTime.now()).eq("id", id);
+        updateWrapper.set("status", User.LOCK).set("update_time", LocalDateTime.now()).eq("id", id);
         update(updateWrapper);
     }
 }

@@ -19,6 +19,10 @@ import java.time.LocalDateTime;
 @Data
 @TableName("tb_good")
 public class Good {
+    //isOnSale的常量
+    public final static Short ON_SALE = 1;
+    public final static Short NOT_ON_SALE = 0;
+
     @TableId(type = IdType.AUTO)
     private Long id;
     private String name;
@@ -27,4 +31,5 @@ public class Good {
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private Long sales;
 }

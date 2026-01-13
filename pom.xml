@@ -33,6 +33,7 @@
         <hutool.version>5.8.40</hutool.version>
         <jwt.version>0.12.6</jwt.version>
         <knife4j.version>4.5.0</knife4j.version>
+        <elasticsearch-client.version>7.12.1</elasticsearch-client.version>
     </properties>
     <dependencies>
 
@@ -149,6 +150,13 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.3</version>
+        </dependency>
+
+        <!-- es依赖 -->
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>${elasticsearch-client.version}</version>
         </dependency>
 
     </dependencies>
