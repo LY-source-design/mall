@@ -137,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public void lockUser(Long id) {
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>();
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("status", User.LOCK).set("update_time", LocalDateTime.now()).eq("id", id);
         update(updateWrapper);
     }

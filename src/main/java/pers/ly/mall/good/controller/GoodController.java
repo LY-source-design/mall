@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pers.ly.mall.common.annotation.AdminApi;
-import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.result.Result;
 import pers.ly.mall.good.dto.AddGoodDTO;
 import pers.ly.mall.good.service.GoodService;
