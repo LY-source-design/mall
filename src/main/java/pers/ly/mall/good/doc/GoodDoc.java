@@ -16,22 +16,26 @@ public class GoodDoc {
     private BigDecimal price;
     private String content;
     private Long sales;
-    private List<String> category;
+    private List<Long> categoryIds;
+    private List<String> categories;
     private List<String> suggestion;
 
-    public GoodDoc(Good good, List<String> category) {
+    public GoodDoc() {}
+
+    public GoodDoc(Good good, List<Long> categoryIds, List<String> categories) {
         this.id = good.getId();
         this.name = good.getName();
         this.isOnSale = Objects.equals(good.getIsOnSale(), Good.ON_SALE);
         this.price = good.getPrice();
         this.content = good.getContent();
         this.sales = good.getSales();
-        this.category = category;
+        this.categoryIds = categoryIds;
+        this.categories = categories;
 
         //合成suggestion
         suggestion = new ArrayList<>();
         suggestion.add(name);
-        suggestion.addAll(category);
+        suggestion.addAll(categories);
     }
 
 

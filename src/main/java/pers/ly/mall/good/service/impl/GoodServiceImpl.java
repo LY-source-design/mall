@@ -1,28 +1,23 @@
 package pers.ly.mall.good.service.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pers.ly.mall.common.constant.ErrorConstant;
 import pers.ly.mall.common.entity.Category;
 import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.GoodCategory;
-import pers.ly.mall.common.exception.EsIOException;
+import pers.ly.mall.common.entity.result.PageResult;
 import pers.ly.mall.good.doc.GoodDoc;
 import pers.ly.mall.good.dto.AddGoodDTO;
+import pers.ly.mall.good.dto.SearchGoodDTO;
 import pers.ly.mall.good.mapper.CategoryMapper;
 import pers.ly.mall.good.mapper.GoodCategoryMapper;
 import pers.ly.mall.good.mapper.GoodMapper;
+import pers.ly.mall.good.service.EsService;
 import pers.ly.mall.good.service.GoodService;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,13 +26,13 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good> implements Go
     private final GoodMapper goodMapper;
     private final CategoryMapper categoryMapper;
     private final GoodCategoryMapper goodCategoryMapper;
-    private final RestHighLevelClient restHighLevelClient;
+    private final EsService esService;
 
-    GoodServiceImpl(GoodMapper goodMapper, CategoryMapper categoryMapper, GoodCategoryMapper goodCategoryMapper, RestHighLevelClient restHighLevelClient) {
+    GoodServiceImpl(GoodMapper goodMapper, CategoryMapper categoryMapper, GoodCategoryMapper goodCategoryMapper,  EsService esService) {
         this.goodMapper = goodMapper;
         this.categoryMapper = categoryMapper;
         this.goodCategoryMapper = goodCategoryMapper;
-        this.restHighLevelClient = restHighLevelClient;
+        this.esService = esService;
     }
 
     /**
@@ -69,16 +64,30 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good> implements Go
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Category::getName)
                 .in(Category::getId, addGoodDTO.getCategoryIds());
-        List<String> category = categoryMapper.selectList(queryWrapper)
+        List<String> categories = categoryMapper.selectList(queryWrapper)
                 .stream().map(Category::getName).toList();
         //集成同步Es
-        GoodDoc goodDoc = new GoodDoc(good, category);
-        IndexRequest indexRequest = new IndexRequest("good").id(good.getId().toString());
-        indexRequest.source(JSONUtil.toJsonStr(goodDoc), XContentType.JSON);
-        try {
-            restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            throw new EsIOException(ErrorConstant.ES_IO_ERROR);
-        }
+        GoodDoc goodDoc = new GoodDoc(good, addGoodDTO.getCategoryIds(), categories);
+        esService.addGoodDoc(goodDoc);
+    }
+
+    /**
+     * 查询商品列表
+     * @Param searchGoodDTO 查询条件
+     * @return 分页查询结果
+     */
+    @Override
+    public PageResult searchGoodList(SearchGoodDTO searchGoodDTO) {
+        return esService.page(searchGoodDTO);
+    }
+
+    /**
+     * 自动补全
+     * @param query 查询条件
+     * @return 返回补全建议
+     */
+    @Override
+    public List<String> suggest(String query) {
+        return esService.suggest(query);
     }
 }

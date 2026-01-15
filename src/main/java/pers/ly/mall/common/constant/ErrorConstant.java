@@ -31,6 +31,7 @@ public class ErrorConstant {
 
     //ES相关
     public static final String ES_IO_ERROR = "ES通信异常";
+    public static final String PAGE_OR_SIZE_ILLEGAL = "分页参数非法";
 
     //common
     public static final String UNKNOWN_ERROR = "未知错误";

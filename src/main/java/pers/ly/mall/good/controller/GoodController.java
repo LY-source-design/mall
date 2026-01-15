@@ -2,14 +2,18 @@ package pers.ly.mall.good.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.web.bind.annotation.*;
 import pers.ly.mall.common.annotation.AdminApi;
+import pers.ly.mall.common.entity.Good;
+import pers.ly.mall.common.entity.result.PageResult;
 import pers.ly.mall.common.entity.result.Result;
 import pers.ly.mall.good.dto.AddGoodDTO;
+import pers.ly.mall.good.dto.SearchGoodDTO;
 import pers.ly.mall.good.service.GoodService;
+import pers.ly.mall.good.vo.SearchGoodVO;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/good")
@@ -33,4 +37,30 @@ public class GoodController {
         goodService.addGood(addGoodDTO);
         return Result.success("上架成功");
     }
+
+    /**
+     * 查询商品列表
+     * @Param searchGoodDTO 查询条件
+     * @return 分页查询结果
+     */
+    @PostMapping("/list")
+    @Operation(summary = "查询商品列表", description = "查询商品列表")
+    public Result<PageResult> searchGoodList(@RequestBody SearchGoodDTO searchGoodDTO){
+        PageResult pageResult = goodService.searchGoodList(searchGoodDTO);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 自动补全
+     * @param query 查询条件
+     * @return 返回补全建议
+     */
+    @GetMapping("/suggest")
+    @Operation(summary = "自动补全", description = "自动补全")
+    public Result<List<String>> suggest(@RequestParam String query){
+        List<String> result = goodService.suggest(query);
+        return Result.success(result);
+    }
+
+
 }
