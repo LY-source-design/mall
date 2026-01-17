@@ -15,4 +15,7 @@ public class GoodCategory {
     private Long id;
     private Long goodId;
     private Long categoryId;
+    private Short quantity;
+    private String goodName;
+    private String goodImage;
 }

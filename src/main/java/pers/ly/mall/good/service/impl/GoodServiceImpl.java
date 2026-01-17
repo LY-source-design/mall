@@ -5,10 +5,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import pers.ly.mall.common.constant.ErrorConstant;
+import pers.ly.mall.common.constant.OssConstant;
 import pers.ly.mall.common.entity.Category;
 import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.GoodCategory;
 import pers.ly.mall.common.entity.result.PageResult;
+import pers.ly.mall.common.exception.OssUploadException;
+import pers.ly.mall.common.utils.AliyunOssUtils;
 import pers.ly.mall.good.doc.GoodDoc;
 import pers.ly.mall.good.dto.AddGoodDTO;
 import pers.ly.mall.good.dto.SearchGoodDTO;
@@ -27,12 +32,14 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good> implements Go
     private final CategoryMapper categoryMapper;
     private final GoodCategoryMapper goodCategoryMapper;
     private final EsService esService;
+    private final AliyunOssUtils aliyunOssUtils;
 
-    GoodServiceImpl(GoodMapper goodMapper, CategoryMapper categoryMapper, GoodCategoryMapper goodCategoryMapper,  EsService esService) {
+    GoodServiceImpl(GoodMapper goodMapper, CategoryMapper categoryMapper, GoodCategoryMapper goodCategoryMapper,  EsService esService,  AliyunOssUtils aliyunOssUtils) {
         this.goodMapper = goodMapper;
         this.categoryMapper = categoryMapper;
         this.goodCategoryMapper = goodCategoryMapper;
         this.esService = esService;
+        this.aliyunOssUtils = aliyunOssUtils;
     }
 
     /**
@@ -90,4 +97,19 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good> implements Go
     public List<String> suggest(String query) {
         return esService.suggest(query);
     }
+
+    @Override
+    public String updateGoodImage(MultipartFile goodImage) {
+        String originalFilename = goodImage.getOriginalFilename();
+        if (originalFilename != null && (originalFilename.endsWith("jpg") ||
+                originalFilename.endsWith("jpeg") ||
+                originalFilename.endsWith("png") ||
+                originalFilename.endsWith("gif"))) {
+            return aliyunOssUtils.upload(OssConstant.AVATAR_PATH, goodImage);
+        }
+        else {
+            throw new OssUploadException(ErrorConstant.FILE_IS_VALID);
+        }
+    }
+
 }

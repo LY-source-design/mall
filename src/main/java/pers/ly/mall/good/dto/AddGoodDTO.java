@@ -10,5 +10,6 @@ public class AddGoodDTO {
     private String name;
     private BigDecimal price;
     private String content;
+    private String image;
     private List<Long> categoryIds;
 }

@@ -10,4 +10,5 @@ public class SearchGoodVO {
     private String name;
     private BigDecimal price;
     private Long sales;
+    private String image;
 }

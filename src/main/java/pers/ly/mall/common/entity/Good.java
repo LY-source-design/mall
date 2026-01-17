@@ -32,4 +32,5 @@ public class Good {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private Long sales;
+    private String image;
 }

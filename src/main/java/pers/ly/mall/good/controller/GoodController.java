@@ -2,8 +2,8 @@ package pers.ly.mall.good.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pers.ly.mall.common.annotation.AdminApi;
 import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.result.PageResult;
@@ -11,7 +11,6 @@ import pers.ly.mall.common.entity.result.Result;
 import pers.ly.mall.good.dto.AddGoodDTO;
 import pers.ly.mall.good.dto.SearchGoodDTO;
 import pers.ly.mall.good.service.GoodService;
-import pers.ly.mall.good.vo.SearchGoodVO;
 
 import java.util.List;
 
@@ -23,6 +22,18 @@ public class GoodController {
 
     GoodController(GoodService goodService) {
         this.goodService = goodService;
+    }
+
+    /**
+     * 上传商品图片文件
+     * @param goodImage 商品图片文件
+     * @return 文件路径
+     */
+    @Operation(summary = "上传头像文件", description = "上传头像")
+    @PostMapping("/avatar/upload")
+    public Result<String> updateGoodImage(@RequestParam("goodImage") MultipartFile goodImage) {
+        String path = goodService.updateGoodImage(goodImage);
+        return Result.success(path);
     }
 
     /**
@@ -60,6 +71,31 @@ public class GoodController {
     public Result<List<String>> suggest(@RequestParam String query){
         List<String> result = goodService.suggest(query);
         return Result.success(result);
+    }
+
+    /**
+     * 查询商品详细信息
+     * @param id 商品id
+     * @return 返回详细信息
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "查询商品详细信息", description = "查询商品详细信息")
+    public Result<Good> searchGoodById(@PathVariable Long id){
+        Good good = goodService.getById(id);
+        return Result.success(good);
+    }
+
+    /**
+     * 删除商品
+     * @param id 商品id
+     * @return 成功描述
+     */
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除商品", description = "删除商品")
+    @AdminApi
+    public Result<String> deleteGoodById(@PathVariable Long id){
+        goodService.removeById(id);
+        return Result.success("删除商品成功");
     }
 
 

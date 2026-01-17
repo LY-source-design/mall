@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @TableName("tb_shopping_car")
 public class ShoppingCar {
+    //TODO: 添加标记状态的字段,让没生辰订单的不超过1个
+    //TODO: 利用redis处理购物车
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;

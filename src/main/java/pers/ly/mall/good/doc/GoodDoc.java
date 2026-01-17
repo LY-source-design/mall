@@ -16,6 +16,7 @@ public class GoodDoc {
     private BigDecimal price;
     private String content;
     private Long sales;
+    private String image;
     private List<Long> categoryIds;
     private List<String> categories;
     private List<String> suggestion;
@@ -29,6 +30,7 @@ public class GoodDoc {
         this.price = good.getPrice();
         this.content = good.getContent();
         this.sales = good.getSales();
+        this.image = good.getImage();
         this.categoryIds = categoryIds;
         this.categories = categories;
 
