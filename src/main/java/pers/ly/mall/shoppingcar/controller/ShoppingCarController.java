@@ -18,21 +18,11 @@ public class ShoppingCarController {
     }
 
     /**
-     * 创建购物车
-     * @return 创建成功信息
-     */
-    @PostMapping("/create")
-    @Operation(summary = "创建购物车", description = "创建购物车")
-    public Result<String> addShoppingCar(){
-        shoppingCarService.addShoppingCar();
-        return Result.success("创建购物车成功");
-    }
-
-    /**
+     * 加入第一件商品才默认利用redis创建购物车
      * 添加商品到购物车
      * @return 返回添加结果
      */
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "添加商品到购物车", description = "添加商品到购物车")
     public Result<String> addGoodToShoppingCar(@RequestBody UpdateShoppingCarDTO updateShoppingCarDTO){
         shoppingCarService.addGoodToShoppingCar(updateShoppingCarDTO);
@@ -44,10 +34,10 @@ public class ShoppingCarController {
      * @param goodId 商品id
      * @return 返回删除结果
      */
-    @DeleteMapping("/{carId}")
+    @DeleteMapping("/{goodId}")
     @Operation(summary = "从购物车移除商品", description = "从购物车移除商品")
-    public Result<String> deleteGoodFromShoppingCar(@PathVariable Long carId, @RequestParam Long goodId){
-        shoppingCarService.deleteGoodFromShoppingCar(carId, goodId);
+    public Result<String> deleteGoodFromShoppingCar(@PathVariable Long goodId){
+        shoppingCarService.deleteGoodFromShoppingCar(goodId);
         return Result.success("成功移除");
     }
 

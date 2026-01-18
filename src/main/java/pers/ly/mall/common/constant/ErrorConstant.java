@@ -29,10 +29,16 @@ public class ErrorConstant {
     public static final String BEGIN_STAMP_VALID = "起始的订单时间不可用,请立即更新";
     public static final String ORDER_TOO_MUCK = "订单数量过多,服务即将崩溃";
 
+    //购物车相关
+    public static final String QUANTITY_ERROR = "商品数目异常";
+    public static final String GOOD_IS_NOT_EXIST = "商品不存在";
+    public static final String CAR_EXPIRED = "购物车过期了";
+
     //ES相关
     public static final String ES_IO_ERROR = "ES通信异常";
     public static final String PAGE_OR_SIZE_ILLEGAL = "分页参数非法";
 
     //common
     public static final String UNKNOWN_ERROR = "未知错误";
+
 }

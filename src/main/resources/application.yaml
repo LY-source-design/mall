@@ -13,7 +13,7 @@ spring:
     redis:
       host: ${mall.redis.host}
       port: ${mall.redis.port}
-      #password: ${blog.redis.password} # docker部署的redis我暂时没有设置密码
+      password: ${mall.redis.password} # docker部署的redis我暂时没有设置密码
       database: ${mall.redis.database}
       lettuce:
         pool:
