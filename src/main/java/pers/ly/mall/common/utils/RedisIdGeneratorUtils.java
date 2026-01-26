@@ -8,6 +8,7 @@ import pers.ly.mall.common.exception.OrderException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Redis的自增id作为1-32位
@@ -42,7 +43,7 @@ public class RedisIdGeneratorUtils {
      */
     public String nextId(String prefix) {
         Long now = System.currentTimeMillis();
-        long stamp = now - BEGIN_TIME;
+        long stamp = (now - BEGIN_TIME) / 1000;
 
         long ret = 0L;
         ret |= stamp << NUM_BIT_COUNT;
@@ -52,6 +53,7 @@ public class RedisIdGeneratorUtils {
         }
 
         String key = prefix + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+        stringRedisTemplate.expire(key, 24, TimeUnit.HOURS);
         Long num = stringRedisTemplate.opsForValue().increment(key);
         if (num == null) {
             //理论上不会是空

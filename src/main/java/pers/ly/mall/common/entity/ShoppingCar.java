@@ -15,14 +15,9 @@ import java.time.LocalDateTime;
 @Data
 @TableName("tb_shopping_car")
 public class ShoppingCar {
-    //status相关常量
-    private final static Short SETTLED = 1; //已结算订单(无论订单状态如何)
-    private final static Short UNSETTLED = 0; //正在使用的订单
-
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;
-    private Short status; //标记购物车状态
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

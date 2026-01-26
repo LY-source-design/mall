@@ -21,7 +21,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/user/me")
                 .addPathPatterns("/user/lock")
                 .addPathPatterns("/good/**")
-                .addPathPatterns("/shoppingCar/**");
+                .addPathPatterns("/shoppingCar/**")
+                .addPathPatterns("/order/**");
     }
 
 

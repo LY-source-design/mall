@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import pers.ly.mall.common.entity.result.Result;
 import pers.ly.mall.shoppingcar.dto.UpdateShoppingCarDTO;
 import pers.ly.mall.shoppingcar.service.ShoppingCarService;
+import pers.ly.mall.shoppingcar.vo.SearchGoodSimpleInfoVO;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/shoppingCar")
@@ -39,6 +42,17 @@ public class ShoppingCarController {
     public Result<String> deleteGoodFromShoppingCar(@PathVariable Long goodId){
         shoppingCarService.deleteGoodFromShoppingCar(goodId);
         return Result.success("成功移除");
+    }
+
+    /**
+     * 查看购物车中的商品
+     * @return 返回商品列表
+     */
+    @GetMapping("/list")
+    @Operation(summary = "查看购物车中的商品", description = "查看购物车商品")
+    public Result<List<SearchGoodSimpleInfoVO>> searchGoodsInCar() {
+        List<SearchGoodSimpleInfoVO> result = shoppingCarService.searchGoodsInCar();
+        return Result.success(result);
     }
 
 }

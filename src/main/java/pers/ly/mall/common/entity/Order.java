@@ -20,6 +20,12 @@ import java.time.LocalDateTime;
 @Data
 @TableName("tb_order")
 public class Order {
+    //status状态的常量
+    public final static Short NOT_PAY = 0;
+    public final static Short WAIT_TO_REACH = 1;
+    public final static Short ALREADY_REACH = 2;
+    public final static Short CANCEL = 3;
+
     @TableId(type = IdType.AUTO)
     private Long id;
     private String orderNumber;

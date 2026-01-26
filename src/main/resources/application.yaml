@@ -21,7 +21,16 @@ spring:
           max-idle: ${mall.redis.lettuce.pool.max-idle}
           min-idle: ${mall.redis.lettuce.pool.min-idle}
           max-wait: ${mall.redis.lettuce.pool.max-wait}
-
+  rabbitmq:
+    #ip+端口
+    host: ${mall.rabbitmq.host}
+    port: ${mall.rabbitmq.port}
+    #用户名
+    username: ${mall.rabbitmq.username}
+    #密码
+    password: ${mall.rabbitmq.password}
+    #虚拟主机
+    virtual-host: ${mall.rabbitmq.virtual-host}
 mybatis-plus:
   configuration:
     #自动驼峰命名转化

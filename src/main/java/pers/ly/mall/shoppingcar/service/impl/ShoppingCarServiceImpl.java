@@ -1,5 +1,6 @@
 package pers.ly.mall.shoppingcar.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -14,7 +15,12 @@ import pers.ly.mall.shoppingcar.dto.UpdateShoppingCarDTO;
 import pers.ly.mall.shoppingcar.mapper.CarItemMapper;
 import pers.ly.mall.shoppingcar.mapper.ShoppingCarMapper;
 import pers.ly.mall.shoppingcar.service.ShoppingCarService;
+import pers.ly.mall.shoppingcar.vo.SearchGoodSimpleInfoVO;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -97,6 +103,47 @@ public class ShoppingCarServiceImpl extends ServiceImpl<ShoppingCarMapper, Shopp
         }
         //刷新过期时间
         refreshShoppingCarExpire(key);
+    }
+
+    /**
+     * 查看购物车中的商品
+     * @return 返回商品列表
+     */
+    @Override
+    public List<SearchGoodSimpleInfoVO> searchGoodsInCar() {
+       Long userId = CurrentContext.getUserId();
+       String key = "shoppingCar:" + userId;
+       Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
+       List<SearchGoodSimpleInfoVO> searchGoodSimpleInfoVOList = new ArrayList<>();
+       entries.forEach((k,v)->{
+           //获取商品id
+           String goodIdStr = (String)k;
+           if(StrUtil.isEmpty(goodIdStr)){
+               throw new ShoppingCarException(ErrorConstant.REDIS_FIND_ERROR);
+           }
+           //获取对应的redis中的商品信息
+           Long goodId = Long.parseLong(goodIdStr);
+           String itemStr = (String)v;
+           if(StrUtil.isEmpty(itemStr)){
+               throw new ShoppingCarException(ErrorConstant.REDIS_FIND_ERROR);
+           }
+           RedisCarItem item = JSONUtil.toBean(itemStr, RedisCarItem.class);
+           SearchGoodSimpleInfoVO searchGoodSimpleInfoVO = new SearchGoodSimpleInfoVO();
+           searchGoodSimpleInfoVO.setGoodId(goodId);
+           BeanUtils.copyProperties(item, searchGoodSimpleInfoVO);
+           searchGoodSimpleInfoVOList.add(searchGoodSimpleInfoVO);
+       });
+       return searchGoodSimpleInfoVOList;
+    }
+
+    @Override
+    public Long saveShoppingCar() {
+        ShoppingCar shoppingCar = new ShoppingCar();
+        shoppingCar.setUserId(CurrentContext.getUserId());
+        shoppingCar.setCreateTime(LocalDateTime.now());
+        shoppingCar.setUpdateTime(LocalDateTime.now());
+        save(shoppingCar);
+        return shoppingCar.getId();
     }
 
 

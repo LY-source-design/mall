@@ -33,12 +33,18 @@ public class ErrorConstant {
     public static final String QUANTITY_ERROR = "商品数目异常";
     public static final String GOOD_IS_NOT_EXIST = "商品不存在";
     public static final String CAR_EXPIRED = "购物车过期了";
+    public static final String REDIS_FIND_ERROR = "redis存储错误(查询错误)";
 
     //ES相关
     public static final String ES_IO_ERROR = "ES通信异常";
     public static final String PAGE_OR_SIZE_ILLEGAL = "分页参数非法";
 
+    //Mq相关
+    public static final String NO_FIRST_DELAY = "延迟消息构造异常,缺少延迟时间";
+
     //common
     public static final String UNKNOWN_ERROR = "未知错误";
 
+
+    public static final String CAR_IS_EMPTY = "购物车不能是空";
 }
