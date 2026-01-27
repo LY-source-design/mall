@@ -1,7 +1,6 @@
 package pers.ly.mall.order.listener;
 
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -75,7 +74,7 @@ public class MqListener {
         //mysql中添加销量
         log.info("开始更新mysql销量");
         orderService.addSales(goodIdWithQuantity);
-        //TODO: es添加销量(乐观锁,利用es的_version做版本号)
+        //es添加销量(乐观锁)
         log.info("开始更新es销量");
         esService.addSales(goodIdWithQuantity);
     }

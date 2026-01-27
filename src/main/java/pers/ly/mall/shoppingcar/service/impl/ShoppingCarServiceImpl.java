@@ -148,9 +148,7 @@ public class ShoppingCarServiceImpl extends ServiceImpl<ShoppingCarMapper, Shopp
         shoppingCar.setUpdateTime(LocalDateTime.now());
         save(shoppingCar);
         //保存购物车和商品关联
-        carItems.forEach(carItem->{
-            carItem.setCarId(shoppingCar.getId());
-        });
+        carItems.forEach(carItem-> carItem.setCarId(shoppingCar.getId()));
         carItemMapper.insert(carItems);
         return shoppingCar.getId();
     }
