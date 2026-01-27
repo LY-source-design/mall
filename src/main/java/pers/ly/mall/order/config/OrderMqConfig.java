@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import pers.ly.mall.common.constant.MqConstant;
 
 @Configuration
-public class DelayMqConfig {
+public class OrderMqConfig {
 
 
     /**
@@ -17,6 +17,25 @@ public class DelayMqConfig {
         return ExchangeBuilder
                 .directExchange(MqConstant.ORDER_EXCHANGE)
                 .build();
+    }
+
+    /**
+     * return 添加销量的mq
+     */
+    @Bean
+    public Queue salesQueue() {
+        return QueueBuilder
+                .durable(MqConstant.SALES_ADD_QUEUE)
+                .build();
+    }
+
+    @Bean
+    public Binding salesQueueBinding() {
+        return BindingBuilder
+                .bind(salesQueue())
+                .to(orderExchange())
+                .with(MqConstant.SALES_ADD_KEY)
+                .noargs();
     }
 
     /**

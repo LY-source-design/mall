@@ -3,9 +3,8 @@ package pers.ly.mall.order.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import pers.ly.mall.common.entity.Order;
 import pers.ly.mall.common.entity.result.Result;
-import pers.ly.mall.order.VO.CreateOrderVO;
+import pers.ly.mall.order.vo.CreateOrderVO;
 import pers.ly.mall.order.service.OrderService;
 import pers.ly.mall.shoppingcar.vo.CheckOrderVO;
 
@@ -49,10 +48,7 @@ public class OrderController {
     @Operation(summary = "支付订单", description = "支付订单")
     @PostMapping("/pay")
     public Result<String> pay(@RequestParam Long orderId) {
-        orderService.update()
-                .set("status", Order.WAIT_TO_REACH)
-                .eq("id", orderId)
-                .update();
+        orderService.pay(orderId);
         return Result.success("成功支付");
     }
 }

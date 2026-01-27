@@ -21,6 +21,4 @@ public class CarItem {
     private Long goodId;
     private Short quantity;
     private BigDecimal price;
-    private String goodName;
-    private String goodImage;
 }

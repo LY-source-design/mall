@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.ly.mall.order.mapper.OrderMapper">
+
+    <update id="addSales">
+        update tb_good set sales = sales + case id
+        <foreach collection="goodIdWithQuantity" item="vo">
+            when #{vo.goodId} then #{vo.quantity}
+        </foreach>
+        else 0 end
+        where id in
+        <foreach collection="goodIdWithQuantity" item="vo" open="(" close=")" separator=",">
+            #{vo.goodId}
+        </foreach>
+    </update>
+</mapper>

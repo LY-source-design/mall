@@ -1,6 +1,7 @@
 package pers.ly.mall.shoppingcar.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import pers.ly.mall.common.entity.CarItem;
 import pers.ly.mall.common.entity.ShoppingCar;
 import pers.ly.mall.shoppingcar.dto.UpdateShoppingCarDTO;
 import pers.ly.mall.shoppingcar.vo.SearchGoodSimpleInfoVO;
@@ -14,5 +15,5 @@ public interface ShoppingCarService extends IService<ShoppingCar> {
 
     List<SearchGoodSimpleInfoVO> searchGoodsInCar();
 
-    Long saveShoppingCar();
+    Long saveShoppingCar(List<CarItem> carItems);
 }

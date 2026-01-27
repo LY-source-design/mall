@@ -1,4 +1,4 @@
-package pers.ly.mall.order.VO;
+package pers.ly.mall.order.vo;
 
 import lombok.Data;
 

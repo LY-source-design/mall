@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.ly.mall.common.constant.ErrorConstant;
 import pers.ly.mall.common.context.CurrentContext;
+import pers.ly.mall.common.entity.CarItem;
 import pers.ly.mall.common.entity.ShoppingCar;
 import pers.ly.mall.common.exception.ShoppingCarException;
 import pers.ly.mall.shoppingcar.dto.RedisCarItem;
@@ -136,13 +138,20 @@ public class ShoppingCarServiceImpl extends ServiceImpl<ShoppingCarMapper, Shopp
        return searchGoodSimpleInfoVOList;
     }
 
+    @Transactional
     @Override
-    public Long saveShoppingCar() {
+    public Long saveShoppingCar(List<CarItem> carItems) {
+        //保存购物车
         ShoppingCar shoppingCar = new ShoppingCar();
         shoppingCar.setUserId(CurrentContext.getUserId());
         shoppingCar.setCreateTime(LocalDateTime.now());
         shoppingCar.setUpdateTime(LocalDateTime.now());
         save(shoppingCar);
+        //保存购物车和商品关联
+        carItems.forEach(carItem->{
+            carItem.setCarId(shoppingCar.getId());
+        });
+        carItemMapper.insert(carItems);
         return shoppingCar.getId();
     }
 

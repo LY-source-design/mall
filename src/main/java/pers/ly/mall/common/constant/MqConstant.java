@@ -8,7 +8,9 @@ public class MqConstant {
     public final static String DELAY_ORDER_ROUTING_KEY = "mall.order.delay.key";
     public final static String DELAY_ORDER_QUEUE = "mall.order.delay.queue";
     public final static String DELAY_ORDER_EXCHANGE = "mall.order.delay.exchange";
-
-
     public static final String HANDLE_DEAD_QUEUE = "mall.order.delay.consume.queue";
+
+    //添加销量mq
+    public static final String SALES_ADD_QUEUE = "mall.order.sales.queue";
+    public static final String SALES_ADD_KEY = "mall.order.sales.key";
 }

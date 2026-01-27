@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pers.ly.mall.common.constant.ErrorConstant;
 import pers.ly.mall.common.constant.MqConstant;
 import pers.ly.mall.common.context.CurrentContext;
+import pers.ly.mall.common.entity.CarItem;
 import pers.ly.mall.common.entity.DelayMessage;
 import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.Order;
@@ -18,10 +19,11 @@ import pers.ly.mall.common.exception.DelayQueueException;
 import pers.ly.mall.common.exception.ShoppingCarException;
 import pers.ly.mall.common.utils.RedisIdGeneratorUtils;
 import pers.ly.mall.good.service.GoodService;
-import pers.ly.mall.order.VO.CreateOrderVO;
+import pers.ly.mall.order.vo.CreateOrderVO;
 import pers.ly.mall.order.listener.DelayMessageHandle;
 import pers.ly.mall.order.mapper.OrderMapper;
 import pers.ly.mall.order.service.OrderService;
+import pers.ly.mall.order.vo.GoodQuantityVO;
 import pers.ly.mall.shoppingcar.dto.RedisCarItem;
 import pers.ly.mall.shoppingcar.service.ShoppingCarService;
 import pers.ly.mall.shoppingcar.vo.CheckOrderVO;
@@ -70,13 +72,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Set<Long> keys = goodIdQuantity.keySet();
 
         List<Good> goods = goodService.query().select("id", "price").in("id", keys).list();
+        List<CarItem> carItems = new ArrayList<>();
         for (Good good : goods) {
+            CarItem carItem = new CarItem();
+            carItem.setGoodId(good.getId());
+            carItem.setPrice(good.getPrice());
+            carItem.setQuantity(goodIdQuantity.get(good.getId()));
+            carItems.add(carItem);
             price = price.add(good.getPrice().multiply(BigDecimal.valueOf(goodIdQuantity.get(good.getId()))));
         }
         //生成订单号
         String orderNum = redisIdGeneratorUtils.nextId("order");
         //更新购物车状态(准确的来说是保存购物车)
-        Long carId = shoppingCarService.saveShoppingCar();
+        Long carId = shoppingCarService.saveShoppingCar(carItems);
 
         order.setUserId(userId);
         order.setOrderNumber(orderNum);
@@ -109,6 +117,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return createOrderVO;
     }
 
+    /**
+     * 核对订单
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public CheckOrderVO checkOrder() {
@@ -140,6 +151,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return checkOrderVO;
     }
 
+
     private Map<Long, Short> getGoodIdQuantityMap(String key) {
         //查询商品数目
         Map<Object, Object> goodInfoMap = stringRedisTemplate.opsForHash().entries(key);
@@ -165,4 +177,41 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         });
         return goodIdQuantity;
     }
+
+    /**
+     * 支付订单
+     * @param orderId 订单id
+     */
+    @Override
+    public void pay(Long orderId) {
+        //支付成功,更新数据库
+        update().set("status", Order.WAIT_TO_REACH).eq("id", orderId).update();
+        //发送消息给mq添加销量
+        rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.SALES_ADD_KEY, orderId);
+    }
+
+    /**
+     * 查询购买商品的数量和id
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Override
+    public List<GoodQuantityVO> queryOrderInfoById(Long orderId) {
+        return orderMapper.queryOrderInfoById(orderId);
+
+    }
+
+    /**
+     * 添加mysql销量
+     * @param goodIdWithQuantity 商品id和销量的关系
+     */
+    @Override
+    public void addSales(List<GoodQuantityVO> goodIdWithQuantity) {
+        if (goodIdWithQuantity == null || goodIdWithQuantity.isEmpty()) {
+            return;
+        }
+        orderMapper.addSales(goodIdWithQuantity);
+    }
+
+
 }

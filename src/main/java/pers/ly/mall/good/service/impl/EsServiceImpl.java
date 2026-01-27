@@ -3,9 +3,15 @@ package pers.ly.mall.good.service.impl;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.get.MultiGetItemResponse;
+import org.elasticsearch.action.get.MultiGetRequest;
+import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -29,12 +35,11 @@ import pers.ly.mall.good.doc.GoodDoc;
 import pers.ly.mall.good.dto.SearchGoodDTO;
 import pers.ly.mall.good.service.EsService;
 import pers.ly.mall.good.vo.SearchGoodVO;
+import pers.ly.mall.order.vo.EsOptimisticLockVO;
+import pers.ly.mall.order.vo.GoodQuantityVO;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -188,5 +193,54 @@ public class EsServiceImpl implements EsService {
             );
         }
         return boolQueryBuilder;
+    }
+
+    /**
+     * 添加销量
+     * @param goodIdWithQuantity 商品id和购买数目
+     */
+    @Override
+    public void addSales(List<GoodQuantityVO> goodIdWithQuantity) {
+        if (goodIdWithQuantity == null || goodIdWithQuantity.isEmpty()) {
+            return;
+        }
+        try {
+            List<Long> goodIds = goodIdWithQuantity.stream().map(GoodQuantityVO::getGoodId).toList();
+            //批量查询
+            MultiGetRequest multiGetRequest = new MultiGetRequest();
+            for (Long goodId : goodIds) {
+                multiGetRequest.add(new MultiGetRequest.Item("good", goodId.toString()));
+            }
+            MultiGetResponse multiResponse = restHighLevelClient.mget(multiGetRequest, RequestOptions.DEFAULT);
+            //解析出seqNo和primaryTerm来实现乐观锁
+            Map<Long, EsOptimisticLockVO> lockVOMap = new HashMap<>();
+            for (MultiGetItemResponse item : multiResponse.getResponses()) {
+                GetResponse response = item.getResponse();
+                Long goodId = Long.parseLong(item.getId());
+                long seqNo = response.getSeqNo();
+                long primaryTerm = response.getPrimaryTerm();
+                Object sales = response.getSourceAsMap().get("sales");
+                Map<String, Object> map = new HashMap<>();
+                map.put("sales", sales);
+                lockVOMap.put(goodId, new EsOptimisticLockVO(seqNo, primaryTerm, map));
+            }
+            //组装批量更新亲求
+            BulkRequest bulkRequest = new BulkRequest();
+            for (GoodQuantityVO goodQuantityVO : goodIdWithQuantity) {
+                Long goodId = goodQuantityVO.getGoodId();
+                EsOptimisticLockVO esOptimisticLockVO = lockVOMap.get(goodId);
+                Long oldSales = Long.parseLong(esOptimisticLockVO.getField("sales").toString());
+                UpdateRequest updateRequest = new UpdateRequest("good", goodId.toString())
+                        .setIfSeqNo(esOptimisticLockVO.getSeqNo())
+                        .setIfPrimaryTerm(esOptimisticLockVO.getPrimaryTerm());
+                Map<String, Object> map = new HashMap<>();
+                map.put("sales", oldSales + goodQuantityVO.getQuantity());
+                updateRequest.doc(map, XContentType.JSON);
+                bulkRequest.add(updateRequest);
+            }
+            restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            throw new EsIOException(ErrorConstant.ES_IO_ERROR);
+        }
     }
 }
