@@ -35,10 +35,13 @@ public class GoodDoc {
         this.categories = categories;
 
         //合成suggestion
+        initSuggest();
+    }
+
+    //用于初始化和更新再构建
+    public void initSuggest() {
         suggestion = new ArrayList<>();
         suggestion.add(name);
         suggestion.addAll(categories);
     }
-
-
 }

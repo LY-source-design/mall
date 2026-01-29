@@ -85,7 +85,7 @@ public class ShoppingCarServiceImpl extends ServiceImpl<ShoppingCarMapper, Shopp
      * @param goodId 商品id
      */
     @Override
-    public void deleteGoodFromShoppingCar(Long goodId) {
+    public void reduceGoodFromShoppingCar(Long goodId) {
         String key = "shoppingCar:" + CurrentContext.getUserId();
         //获取商品数目
         RedisCarItem item = parseRedisHash(goodId, key);
@@ -151,6 +151,16 @@ public class ShoppingCarServiceImpl extends ServiceImpl<ShoppingCarMapper, Shopp
         carItems.forEach(carItem-> carItem.setCarId(shoppingCar.getId()));
         carItemMapper.insert(carItems);
         return shoppingCar.getId();
+    }
+
+    /**
+     * 把商品移除购物车
+     * @param goodId 商品id
+     */
+    @Override
+    public void deleteGoodFromShoppingCar(Long goodId) {
+        String key = "shoppingCar:" + CurrentContext.getUserId();
+        stringRedisTemplate.opsForHash().delete(key, goodId.toString());
     }
 
 

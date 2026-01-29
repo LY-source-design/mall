@@ -57,7 +57,10 @@ public class MqListener {
                     orderService.update().set("status", Order.CANCEL).eq("id", id).update();
                 }
             }
-            else {
+            else if(Order.CANCEL.equals(status)){
+                log.info("id为{}的订单已取消", id);
+            }
+            else if(Order.WAIT_TO_REACH.equals(status)){
                 log.info("id为{}的订单已支付", id);
             }
         }

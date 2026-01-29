@@ -10,7 +10,9 @@ import pers.ly.mall.common.entity.result.PageResult;
 import pers.ly.mall.common.entity.result.Result;
 import pers.ly.mall.good.dto.AddGoodDTO;
 import pers.ly.mall.good.dto.SearchGoodDTO;
+import pers.ly.mall.good.dto.UpdateGoodDTO;
 import pers.ly.mall.good.service.GoodService;
+import pers.ly.mall.good.vo.UpdateGoodStatusVO;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class GoodController {
      * @param goodImage 商品图片文件
      * @return 文件路径
      */
-    @Operation(summary = "上传头像文件", description = "上传头像")
+    @Operation(summary = "上传商品图片文件", description = "上传商品图片")
     @PostMapping("/avatar/upload")
     public Result<String> updateGoodImage(@RequestParam("goodImage") MultipartFile goodImage) {
         String path = goodService.updateGoodImage(goodImage);
@@ -37,16 +39,16 @@ public class GoodController {
     }
 
     /**
-     * 上架商品
+     * 添加商品
      * @param addGoodDTO 商品信息
      * @return 返回成功信号
      */
     @AdminApi
     @PostMapping
-    @Operation(summary = "上架商品", description = "上架商品")
+    @Operation(summary = "添加商品", description = "添加商品")
     public Result<String> addGood(@RequestBody AddGoodDTO addGoodDTO){
         goodService.addGood(addGoodDTO);
-        return Result.success("上架成功");
+        return Result.success("添加商品成功");
     }
 
     /**
@@ -98,5 +100,29 @@ public class GoodController {
         return Result.success("删除商品成功");
     }
 
+    /**
+     * 更新商品信息
+     * @param updateGoodDTO 更新的内容
+     * @return 返回更新结果
+     */
+    @AdminApi
+    @PutMapping
+    @Operation(summary = "修改商品", description = "修改商品")
+    public Result<String> updateGoodById(@RequestBody UpdateGoodDTO updateGoodDTO){
+        goodService.updateGoodById(updateGoodDTO);
+        return Result.success("修改成功");
+    }
 
+    /**
+     * 更新商品上下架状态
+     * @param id 商品id
+     * @return 返回最新状态
+     */
+    @AdminApi
+    @Operation(summary = "更新商品上下架状态", description = "更新商品上下架状态")
+    @PutMapping("/{id}")
+    public Result<UpdateGoodStatusVO> updateGoodStatus(@PathVariable Long id){
+        UpdateGoodStatusVO updateGoodStatusVO = goodService.updateGoodStatus(id);
+        return Result.success(updateGoodStatusVO);
+    }
 }

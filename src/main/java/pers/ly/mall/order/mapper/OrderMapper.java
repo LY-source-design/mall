@@ -14,4 +14,8 @@ public interface OrderMapper extends BaseMapper<Order> {
     List<GoodQuantityVO> queryOrderInfoById(Long orderId);
 
     void addSales(List<GoodQuantityVO> goodIdWithQuantity);
+
+    @Select("select id, order_number, user_id, car_id, price, status, create_time, update_time" +
+            " from tb_order where user_id = #{userId} order by create_time desc limit #{offset}, #{size}")
+    List<Order> pageByUserId(Long userId, Integer size, Integer offset);
 }

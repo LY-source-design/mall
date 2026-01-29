@@ -2,12 +2,10 @@ package pers.ly.mall.good.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.get.MultiGetItemResponse;
-import org.elasticsearch.action.get.MultiGetRequest;
-import org.elasticsearch.action.get.MultiGetResponse;
+import org.elasticsearch.action.get.*;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -19,6 +17,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
@@ -29,10 +28,13 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import pers.ly.mall.common.constant.ErrorConstant;
+import pers.ly.mall.common.entity.Category;
+import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.result.PageResult;
 import pers.ly.mall.common.exception.EsIOException;
 import pers.ly.mall.good.doc.GoodDoc;
 import pers.ly.mall.good.dto.SearchGoodDTO;
+import pers.ly.mall.good.dto.UpdateGoodDTO;
 import pers.ly.mall.good.service.EsService;
 import pers.ly.mall.good.vo.SearchGoodVO;
 import pers.ly.mall.order.vo.EsOptimisticLockVO;
@@ -171,7 +173,7 @@ public class EsServiceImpl implements EsService {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
         //对于名字的匹配
-        if(StrUtil.isEmpty(searchGoodDTO.getSearch())) {
+        if(StrUtil.isBlank(searchGoodDTO.getSearch())) {
             boolQueryBuilder.must(QueryBuilders.matchAllQuery());
         }
         else {
@@ -180,11 +182,16 @@ public class EsServiceImpl implements EsService {
         //一定在售
         boolQueryBuilder.filter(QueryBuilders.termQuery("isOnSale", true));
         //匹配价格
-        if(searchGoodDTO.getHighPrice() != null && searchGoodDTO.getLowPrice() != null) {
+        if(searchGoodDTO.getHighPrice() != null) {
+            boolQueryBuilder.filter(
+                    QueryBuilders.rangeQuery("price")
+                            .lte(searchGoodDTO.getHighPrice())
+            );
+        }
+        if (searchGoodDTO.getLowPrice() != null) {
             boolQueryBuilder.filter(
                     QueryBuilders.rangeQuery("price")
                             .gte(searchGoodDTO.getLowPrice())
-                            .lte(searchGoodDTO.getHighPrice())
             );
         }
         if(searchGoodDTO.getCategoryIds() != null && !searchGoodDTO.getCategoryIds().isEmpty()) {
@@ -239,6 +246,50 @@ public class EsServiceImpl implements EsService {
                 bulkRequest.add(updateRequest);
             }
             restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            throw new EsIOException(ErrorConstant.ES_IO_ERROR);
+        }
+    }
+
+    @Override
+    public void updateGoodById(UpdateGoodDTO updateGoodDTO, List<Category> categoryList) {
+        try {
+            GetRequest getRequest = new GetRequest("good", updateGoodDTO.getId().toString());
+            GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+            //解析结果
+            String json = response.getSourceAsString();
+            GoodDoc goodDoc = JSONUtil.toBean(json, GoodDoc.class);
+            //构造新的goodDoc
+            if(StrUtil.isNotBlank(updateGoodDTO.getName())) {
+                goodDoc.setName(updateGoodDTO.getName());
+            }
+            if(StrUtil.isNotBlank(updateGoodDTO.getContent())){
+                goodDoc.setContent(updateGoodDTO.getContent());
+            }
+            if(StrUtil.isNotBlank(updateGoodDTO.getImage())) {
+                goodDoc.setImage(updateGoodDTO.getImage());
+            }
+            if (updateGoodDTO.getPrice() != null) {
+                goodDoc.setPrice(updateGoodDTO.getPrice());
+            }
+            if (updateGoodDTO.getIsOnSale()!=null) {
+                goodDoc.setIsOnSale(updateGoodDTO.getIsOnSale().equals(Good.ON_SALE));
+            }
+            if (updateGoodDTO.getCategoryIds() != null && !updateGoodDTO.getCategoryIds().isEmpty()) {
+                List<Long> categoryIds = new ArrayList<>();
+                List<String> categories = new ArrayList<>();
+                for (Category category : categoryList) {
+                    categoryIds.add(category.getId());
+                    categories.add(category.getName());
+                }
+                goodDoc.setCategoryIds(categoryIds);
+                goodDoc.setCategories(categories);
+            }
+            goodDoc.initSuggest();
+            //全量更新
+            IndexRequest indexRequest = new IndexRequest("good").id(goodDoc.getId().toString());
+            indexRequest.source(JSONUtil.toJsonStr(goodDoc), XContentType.JSON);
+            restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
             throw new EsIOException(ErrorConstant.ES_IO_ERROR);
         }

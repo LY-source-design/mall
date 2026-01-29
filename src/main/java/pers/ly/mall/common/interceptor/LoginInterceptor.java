@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,6 +18,7 @@ import pers.ly.mall.common.utils.JwtUtils;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
     private final JwtConfigProperties jwtConfigProperties;
@@ -34,6 +36,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             //不是api调用直接放行
             return true;
         }
+
+        log.info("服务器收到了请求:" + request.getRequestURI());
 
         String token = request.getHeader(jwtConfigProperties.getTokenHeader());
         try{

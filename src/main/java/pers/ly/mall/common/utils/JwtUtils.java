@@ -1,10 +1,12 @@
 package pers.ly.mall.common.utils;
 
 
+import cn.hutool.core.util.StrUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import pers.ly.mall.common.constant.ErrorConstant;
 import pers.ly.mall.common.exception.JwtParseException;
 
@@ -13,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
+@Slf4j
 public class JwtUtils {
 
     /**
@@ -86,14 +89,13 @@ public class JwtUtils {
      * @return 没有Bearer头的令牌
      */
     private static String getTokenWithoutPrefix(String token, String prefix) {
-        if(token ==null|| token.isEmpty()){
+        if(token ==null|| StrUtil.isBlank(token)){
             throw new JwtParseException(ErrorConstant.TOKE_IS_EMPTY);
         }
         if(!token.startsWith(prefix)){
             throw new JwtParseException(ErrorConstant.TOKEN_NOT_VALID);
         }
-        String[] split = token.split(prefix);
-        return split[1];
+        return token.substring(prefix.length());
     }
 
 }

@@ -15,7 +15,9 @@ import pers.ly.mall.common.entity.CarItem;
 import pers.ly.mall.common.entity.DelayMessage;
 import pers.ly.mall.common.entity.Good;
 import pers.ly.mall.common.entity.Order;
+import pers.ly.mall.common.entity.result.PageResult;
 import pers.ly.mall.common.exception.DelayQueueException;
+import pers.ly.mall.common.exception.OrderException;
 import pers.ly.mall.common.exception.ShoppingCarException;
 import pers.ly.mall.common.utils.RedisIdGeneratorUtils;
 import pers.ly.mall.good.service.GoodService;
@@ -211,6 +213,41 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return;
         }
         orderMapper.addSales(goodIdWithQuantity);
+    }
+
+    /**
+     * 查询历史订单
+     * @param page 第几页
+     * @param size 每页的大小
+     * @return 返回分页结果
+     */
+    @Override
+    public PageResult searchOrders(Integer page, Integer size) {
+        //获取用户id
+        Long userId = CurrentContext.getUserId();
+        //根据id分页查询订单(这里懒得配置分页插件,手写sql)
+        Long total = orderMapper.selectCount(null);
+        if(page == null || size == null || page <= 0 || size <= 0){
+            throw new OrderException(ErrorConstant.PAGE_OR_SIZE_ILLEGAL);
+        }
+        List<Order> list = orderMapper.pageByUserId(userId, size, (page - 1) * size);
+        //构造并返回分页结果
+        PageResult pageResult = new PageResult();
+        pageResult.setRecords(list);
+        pageResult.setTotal(total);
+        return pageResult;
+    }
+
+    @Override
+    public void cancelOrderWithoutPay(Long orderId) {
+        Order order = query().eq("id", orderId).one();
+        if(order == null){
+            throw new OrderException(ErrorConstant.ID_IS_VALID);
+        }
+        if(!Objects.equals(order.getStatus(), Order.NOT_PAY)){
+            throw new OrderException(ErrorConstant.ONLY_CANCEL_NOT_PAY);
+        }
+        update().set("status", Order.CANCEL).eq("id", orderId).update();
     }
 
 

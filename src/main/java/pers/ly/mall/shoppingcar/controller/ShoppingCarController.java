@@ -37,8 +37,20 @@ public class ShoppingCarController {
      * @param goodId 商品id
      * @return 返回删除结果
      */
-    @DeleteMapping("/{goodId}")
+    @DeleteMapping("/reduce/{goodId}")
     @Operation(summary = "从购物车移除商品", description = "从购物车移除商品")
+    public Result<String> reduceGoodFromShoppingCar(@PathVariable Long goodId){
+        shoppingCarService.reduceGoodFromShoppingCar(goodId);
+        return Result.success("成功减少");
+    }
+
+    /**
+     * 把商品移除购物车
+     * @param goodId 商品id
+     * @return 返回移除结果
+     */
+    @Operation(summary = "把商品移除购物车", description = "把商品移除购物车")
+    @DeleteMapping("/all/{goodId}")
     public Result<String> deleteGoodFromShoppingCar(@PathVariable Long goodId){
         shoppingCarService.deleteGoodFromShoppingCar(goodId);
         return Result.success("成功移除");

@@ -50,6 +50,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 引入aop依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- 加密依赖 -->
         <dependency>
             <groupId>org.springframework.security</groupId>

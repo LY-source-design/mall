@@ -28,6 +28,7 @@ public class ErrorConstant {
     //订单相关
     public static final String BEGIN_STAMP_VALID = "起始的订单时间不可用,请立即更新";
     public static final String ORDER_TOO_MUCK = "订单数量过多,服务即将崩溃";
+    public static final String ONLY_CANCEL_NOT_PAY = "只可以取消未支付的订单";
 
     //购物车相关
     public static final String QUANTITY_ERROR = "商品数目异常";
@@ -37,14 +38,15 @@ public class ErrorConstant {
 
     //ES相关
     public static final String ES_IO_ERROR = "ES通信异常";
-    public static final String PAGE_OR_SIZE_ILLEGAL = "分页参数非法";
 
     //Mq相关
     public static final String NO_FIRST_DELAY = "延迟消息构造异常,缺少延迟时间";
 
     //common
     public static final String UNKNOWN_ERROR = "未知错误";
-
+    public static final String ID_IS_VALID = "非法id";
+    public static final String PAGE_OR_SIZE_ILLEGAL = "分页参数非法";
 
     public static final String CAR_IS_EMPTY = "购物车不能是空";
+
 }

@@ -11,9 +11,11 @@ import java.util.List;
 public interface ShoppingCarService extends IService<ShoppingCar> {
     void addGoodToShoppingCar(UpdateShoppingCarDTO updateShoppingCarDTO);
 
-    void deleteGoodFromShoppingCar(Long goodId);
+    void reduceGoodFromShoppingCar(Long goodId);
 
     List<SearchGoodSimpleInfoVO> searchGoodsInCar();
 
     Long saveShoppingCar(List<CarItem> carItems);
+
+    void deleteGoodFromShoppingCar(Long goodId);
 }
