@@ -1,7 +1,6 @@
 package pers.ly.mall.seckill.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -169,11 +168,8 @@ public class SeckillGoodServiceImpl extends ServiceImpl<SeckillGoodMapper, Secki
         String purchasedSetKey = "seckill:" + "purchased:" + seckillGoodId;
         List<String> keys = new ArrayList<>();
         Collections.addAll(keys, stockKey, qualifiedSetKey, purchasedSetKey);
-        Long result = stringRedisTemplate.execute(SECKILL_LUA_SCRIPT, keys, userId.toString());
+        long result = stringRedisTemplate.execute(SECKILL_LUA_SCRIPT, keys, userId.toString());
         //处理异常
-        if(result == null){
-            throw new SeckillException(ErrorConstant.UNKNOWN_ERROR);
-        }
         if (result == 0) {
             throw new SeckillException(ErrorConstant.GOOD_IS_NOT_EXIST); //商品不存在
         } else if (result == 1) {

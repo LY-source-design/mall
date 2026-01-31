@@ -1,7 +1,6 @@
 package pers.ly.mall.seckill.config;
 
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pers.ly.mall.common.constant.MqConstant;

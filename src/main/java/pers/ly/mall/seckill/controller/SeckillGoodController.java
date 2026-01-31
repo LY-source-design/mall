@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @Tag(name = "秒杀系统管理", description = "管理秒杀相关接口")
 public class SeckillGoodController {
-    private SeckillGoodService seckillGoodService;
+    private final SeckillGoodService seckillGoodService;
     public SeckillGoodController(SeckillGoodService seckillGoodService) {
         this.seckillGoodService = seckillGoodService;
     }

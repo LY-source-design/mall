@@ -39,14 +39,10 @@ public class SeckillMqListener {
     public void handleDelayMessage(DelayMessage<Map<String,Object>> msg) {
         Map<String,Object> map = msg.getMessage();
         Long userId = Long.parseLong(map.get("userId").toString());
-        Long seckillGoodId = Long.parseLong(map.get("seckillGoodId").toString());
+        long seckillGoodId = Long.parseLong(map.get("seckillGoodId").toString());
         log.info("id为{}开始取消购买资格", userId);
-        if (userId == null || seckillGoodId == null) {
-            throw new DelayQueueException(ErrorConstant.UNKNOWN_ERROR);
-        }
         String stockKey = "seckill:" + "stock:" + seckillGoodId;
         String purchasedSetKey = "seckill:" + "qualified:" + seckillGoodId;
-        Boolean member = stringRedisTemplate.opsForSet().isMember(purchasedSetKey, userId.toString());
         if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember(purchasedSetKey, userId.toString()))) {
             if(msg.hasNextDelay()) {
                 Long delay = msg.removeNextDelay();
