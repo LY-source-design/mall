@@ -35,6 +35,15 @@ public class ErrorConstant {
     public static final String GOOD_IS_NOT_EXIST = "商品不存在";
     public static final String CAR_EXPIRED = "购物车过期了";
     public static final String REDIS_FIND_ERROR = "redis存储错误(查询错误)";
+    public static final String CAR_IS_EMPTY = "购物车不能是空";
+
+    //抢购相关
+    public static final String HAVE_PURCHASED = "一个人只能买一次";
+    public static final String HAVE_NOT_PAY = "未支付之前的订单";
+    public static final String SECKILL_IS_NOT_BEGIN = "抢购还没开始";
+    public static final String SECKILL_IS_OVER = "抢购已经结束了";
+    public static final String PAY_TOO_LATE = "支付太慢了";
+    public static final String TIME_ERROR = "时间参数异常";
 
     //ES相关
     public static final String ES_IO_ERROR = "ES通信异常";
@@ -46,7 +55,5 @@ public class ErrorConstant {
     public static final String UNKNOWN_ERROR = "未知错误";
     public static final String ID_IS_VALID = "非法id";
     public static final String PAGE_OR_SIZE_ILLEGAL = "分页参数非法";
-
-    public static final String CAR_IS_EMPTY = "购物车不能是空";
 
 }

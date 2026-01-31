@@ -22,7 +22,7 @@ import pers.ly.mall.common.exception.ShoppingCarException;
 import pers.ly.mall.common.utils.RedisIdGeneratorUtils;
 import pers.ly.mall.good.service.GoodService;
 import pers.ly.mall.order.vo.CreateOrderVO;
-import pers.ly.mall.order.listener.DelayMessageHandle;
+import pers.ly.mall.common.handler.DeadMessageHandler;
 import pers.ly.mall.order.mapper.OrderMapper;
 import pers.ly.mall.order.service.OrderService;
 import pers.ly.mall.order.vo.GoodQuantityVO;
@@ -86,7 +86,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //生成订单号
         String orderNum = redisIdGeneratorUtils.nextId("order");
         //更新购物车状态(准确的来说是保存购物车)
-        Long carId = shoppingCarService.saveShoppingCar(carItems);
+        Long carId = shoppingCarService.saveShoppingCar(carItems, userId);
 
         order.setUserId(userId);
         order.setOrderNumber(orderNum);
@@ -110,8 +110,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         log.info("发送请求,订单id:" + order.getId());
         Long delay = longDelayMessage.removeNextDelay();
-        rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.DELAY_ORDER_ROUTING_KEY,
-                longDelayMessage, new DelayMessageHandle(delay));
+        rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.ORDER_DELAY_KEY,
+                longDelayMessage, new DeadMessageHandler(delay));
         //创建返回信息
         CreateOrderVO createOrderVO = new CreateOrderVO();
         createOrderVO.setOrderId(order.getId());

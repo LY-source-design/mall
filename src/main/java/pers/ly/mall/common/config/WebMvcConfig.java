@@ -23,7 +23,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/good/**")
                 .excludePathPatterns("/good/list")
                 .addPathPatterns("/shoppingCar/**")
-                .addPathPatterns("/order/**");
+                .addPathPatterns("/order/**")
+                .addPathPatterns("/seckill/**");
     }
 
     @Override

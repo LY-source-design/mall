@@ -15,7 +15,7 @@ public interface ShoppingCarService extends IService<ShoppingCar> {
 
     List<SearchGoodSimpleInfoVO> searchGoodsInCar();
 
-    Long saveShoppingCar(List<CarItem> carItems);
+    Long saveShoppingCar(List<CarItem> carItems, Long userId);
 
     void deleteGoodFromShoppingCar(Long goodId);
 }

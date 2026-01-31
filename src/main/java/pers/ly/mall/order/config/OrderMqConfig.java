@@ -44,7 +44,7 @@ public class OrderMqConfig {
     @Bean
     public FanoutExchange delayOrderExchange(){
         return ExchangeBuilder
-                .fanoutExchange(MqConstant.DELAY_ORDER_EXCHANGE)
+                .fanoutExchange(MqConstant.ORDER_DELAY_EXCHANGE)
                 .build();
     }
 
@@ -54,8 +54,8 @@ public class OrderMqConfig {
     @Bean
     public Queue delayOrderQueue(){
         return QueueBuilder
-                .durable(MqConstant.DELAY_ORDER_QUEUE)
-                .withArgument("x-dead-letter-exchange", MqConstant.DELAY_ORDER_EXCHANGE)
+                .durable(MqConstant.ORDER_DELAY_QUEUE)
+                .withArgument("x-dead-letter-exchange", MqConstant.ORDER_DELAY_EXCHANGE)
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class OrderMqConfig {
         return BindingBuilder
                 .bind(delayOrderQueue())
                 .to(orderExchange())
-                .with(MqConstant.DELAY_ORDER_ROUTING_KEY)
+                .with(MqConstant.ORDER_DELAY_KEY)
                 .noargs();
     }
 

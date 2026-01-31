@@ -140,10 +140,10 @@ public class ShoppingCarServiceImpl extends ServiceImpl<ShoppingCarMapper, Shopp
 
     @Transactional
     @Override
-    public Long saveShoppingCar(List<CarItem> carItems) {
+    public Long saveShoppingCar(List<CarItem> carItems, Long userId) {
         //保存购物车
         ShoppingCar shoppingCar = new ShoppingCar();
-        shoppingCar.setUserId(CurrentContext.getUserId());
+        shoppingCar.setUserId(userId);
         shoppingCar.setCreateTime(LocalDateTime.now());
         shoppingCar.setUpdateTime(LocalDateTime.now());
         save(shoppingCar);

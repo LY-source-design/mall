@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pers.ly.mall.common.constant.MqConstant;
 import pers.ly.mall.common.entity.DelayMessage;
 import pers.ly.mall.common.entity.Order;
+import pers.ly.mall.common.handler.DeadMessageHandler;
 import pers.ly.mall.good.service.EsService;
 import pers.ly.mall.good.service.GoodService;
 import pers.ly.mall.order.service.OrderService;
@@ -17,13 +18,13 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class MqListener {
+public class OrderMqListener {
     private final RabbitTemplate rabbitTemplate;
     private final OrderService orderService;
     private final GoodService goodService;
     private final EsService esService;
-    public MqListener(RabbitTemplate rabbitTemplate, OrderService orderService,
-                      GoodService goodService, EsService esService) {
+    public OrderMqListener(RabbitTemplate rabbitTemplate, OrderService orderService,
+                           GoodService goodService, EsService esService) {
         this.rabbitTemplate = rabbitTemplate;
         this.orderService = orderService;
         this.goodService = goodService;
@@ -48,8 +49,8 @@ public class MqListener {
                 if(msg.hasNextDelay()) {
                     //重新发送给死信队列
                     Long delay = msg.removeNextDelay();
-                    rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.DELAY_ORDER_ROUTING_KEY,
-                            msg, new DelayMessageHandle(delay));
+                    rabbitTemplate.convertAndSend(MqConstant.ORDER_EXCHANGE, MqConstant.ORDER_DELAY_KEY,
+                            msg, new DeadMessageHandler(delay));
                 }
                 else {
                     //取消订单

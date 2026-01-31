@@ -53,11 +53,13 @@ public class RedisIdGeneratorUtils {
         }
 
         String key = prefix + ":" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-        stringRedisTemplate.expire(key, 24, TimeUnit.HOURS);
         Long num = stringRedisTemplate.opsForValue().increment(key);
         if (num == null) {
             //理论上不会是空
             throw new OrderException(ErrorConstant.UNKNOWN_ERROR);
+        }
+        if (num == 1) {
+            stringRedisTemplate.expire(key, 2, TimeUnit.MINUTES);
         }
         if(num >> 32 != 0) {
             //订单超出上线

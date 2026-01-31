@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.ly.mall.seckill.mapper.SeckillGoodMapper">
+
+    <select id="listSeckillGoodInDay" resultType="pers.ly.mall.seckill.vo.SearchSimpleSeckillGoodVO">
+        select sg.id as seckillGoodId, sg.good_id as goodId, g.name as goodName, g.image as goodImage, sg.price as price
+        from tb_seckill_good as sg join tb_good as g on sg.good_id = g.id
+        where sg.begin_time &gt;= #{begin} and sg.end_time &lt; #{end}
+    </select>
+
+    <select id="searchSeckillGoodById" resultType="pers.ly.mall.seckill.vo.SearchSeckillGoodVO">
+        select  sg.id as seckillGoodId, sg.good_id as goodId, g.name as goodName, g.image as goodImage,
+                g.sales as sales, g.price as originalPrice, sg.price as seckillPrice
+        from tb_seckill_good as sg join tb_good as g on sg.good_id = g.id
+        where sg.id = #{seckillGoodId}
+    </select>
+</mapper>
